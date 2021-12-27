@@ -12,5 +12,3 @@ export const GET_ALL_POSTS_QUERY = gql`
     }
   }
 `;
-
-export default GET_ALL_POSTS_QUERY;

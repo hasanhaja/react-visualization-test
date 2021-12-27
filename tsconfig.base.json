@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@react-visualization-test/api": ["libs/api/src/index.ts"]
+      "@react-visualization-test/api": ["libs/api/src/index.ts"],
+      "@react-visualization-test/processor": ["libs/processor/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
