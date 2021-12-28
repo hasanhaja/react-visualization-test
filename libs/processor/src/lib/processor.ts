@@ -4,11 +4,11 @@ export interface ProcessedAllPostsData {
   allPosts: Array<ProcessedPost>;
 }
 
-export type Month = number;
+export type MonthIndex = number;
 
 export interface ProcessedPost {
   title: string;
-  createdAt: Month;
+  createdAt: MonthIndex;
   likelyTopics: Array<LikelyTopic>;
 }
 
@@ -23,7 +23,7 @@ export class Processor {
     };
   }
 
-  public get top3TopicsByMonth(): Map<Month, Array<LikelyTopic>> {
+  public get top3TopicsByMonth(): Map<MonthIndex, Array<LikelyTopic>> {
     const top3TopicsByMonthMap = this.topicsByMonth;
 
     top3TopicsByMonthMap.forEach((likelyTopics, month) => {
@@ -33,8 +33,8 @@ export class Processor {
     return top3TopicsByMonthMap;
   }
 
-  public get topicsByMonth(): Map<Month, Array<LikelyTopic>> {
-    const topicsByMonthMap = new Map<Month, Array<LikelyTopic>>();
+  private get topicsByMonth(): Map<MonthIndex, Array<LikelyTopic>> {
+    const topicsByMonthMap = new Map<MonthIndex, Array<LikelyTopic>>();
 
     this.result.allPosts
       .forEach((post) =>
