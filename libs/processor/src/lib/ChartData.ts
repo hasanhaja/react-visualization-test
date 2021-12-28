@@ -1,4 +1,4 @@
-import { MonthIndex } from '@react-visualization-test/processor';
+import { MonthIndex } from "./processor";
 
 export interface ChartData {
   month: MonthIndex;

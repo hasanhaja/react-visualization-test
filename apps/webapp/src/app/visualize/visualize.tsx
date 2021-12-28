@@ -7,13 +7,35 @@ import { ChartData, ChartProcessor, Processor } from '@react-visualization-test/
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear, scaleOrdinal } from '@visx/scale';
 import { LegendItem, LegendLabel, LegendOrdinal } from '@visx/legend';
+import { Paper } from '@mui/material';
 
 export interface VisualizeProps {
-  data: AllPostsData
+  data: AllPostsData;
+  width: number;
+  height: number;
+  margin: { top: number; right: number; bottom: number; left: number };
 }
 
-const Container = styled.div`
+const background = "#ffdede";
+const darkColor = "#333";
 
+const Container = styled(Paper)`
+  background-color: ${background};
+  width: fit-content;
+  height: fit-content;
+  padding: 1em;
+
+  min-width: 350px;
+  min-height: 350px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  flex-grow: 1;
+`;
+
+const Svg = styled.svg`
+  margin: auto;
 `;
 
 export const MONTHS = [
@@ -36,20 +58,7 @@ export interface Legend {
   colors: Array<string>;
 }
 
-// TODO use visx parentsize component
-const width = 800;
-const height = 800;
-const margin = {
-  top: 40,
-  bottom: 40,
-  left: 0,
-  right: 0,
-};
-
-const background = "#ffdede";
-const darkColor = "#333";
-
-export function Visualize({ data }: VisualizeProps) {
+export function Visualize({ data, width, margin, height }: VisualizeProps) {
   const processor = new Processor(data);
   const chartProcessor = new ChartProcessor(processor.top3TopicsByMonth);
 
@@ -99,8 +108,8 @@ export function Visualize({ data }: VisualizeProps) {
   // TODO Don't display bar if null or undefined (not sure which range to modify)
 
   return (
-    <Container>
-      <svg width={width} height={height}>
+    <Container elevation={8}>
+      <Svg width={width} height={height}>
         <rect x={0} y={0} width={width} height={height} fill={background} rx={14} />
         <Group top={margin.top} left={margin.left}>
           <BarGroup
@@ -144,7 +153,7 @@ export function Visualize({ data }: VisualizeProps) {
             textAnchor: 'middle',
           })}
         />
-      </svg>
+      </Svg>
       <LegendOrdinal scale={legendColorScale} labelFormat={(label) => `${label.replace(/^\w/, c => c.toUpperCase())}`}>
         {(labels) => (
           <div style={{ display: 'flex', flexDirection: 'row' }}>
