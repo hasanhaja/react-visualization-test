@@ -1,10 +1,13 @@
 import { AllPostsData, LikelyTopic, Post } from '@react-visualization-test/api';
+import { ChartData } from './ChartData';
+import { ChartProcessor } from './ChartProcessor';
 
 export interface ProcessedAllPostsData {
   allPosts: Array<ProcessedPost>;
 }
 
 export type MonthIndex = number;
+export type TopicsByMonthData = Map<MonthIndex, Array<LikelyTopic>>;
 
 export interface ProcessedPost {
   title: string;
@@ -23,7 +26,7 @@ export class Processor {
     };
   }
 
-  public get top3TopicsByMonth(): Map<MonthIndex, Array<LikelyTopic>> {
+  public get top3TopicsByMonth(): TopicsByMonthData {
     const top3TopicsByMonthMap = this.topicsByMonth;
 
     top3TopicsByMonthMap.forEach((likelyTopics, month) => {
@@ -33,7 +36,7 @@ export class Processor {
     return top3TopicsByMonthMap;
   }
 
-  private get topicsByMonth(): Map<MonthIndex, Array<LikelyTopic>> {
+  private get topicsByMonth(): TopicsByMonthData {
     const topicsByMonthMap = new Map<MonthIndex, Array<LikelyTopic>>();
 
     this.result.allPosts
@@ -96,4 +99,7 @@ export class Processor {
   }
 }
 
-export default Processor;
+export {
+  ChartProcessor,
+  ChartData,
+};

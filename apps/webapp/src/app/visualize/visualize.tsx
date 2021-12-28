@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import React from 'react';
-import { AllPostsData, LikelyTopic } from '@react-visualization-test/api';
-import { Bar, BarGroup } from '@visx/shape';
+import { AllPostsData} from '@react-visualization-test/api';
+import { BarGroup } from '@visx/shape';
 import { AxisBottom } from '@visx/axis';
-import { MonthIndex, Processor } from '@react-visualization-test/processor';
+import { ChartData, ChartProcessor, Processor } from '@react-visualization-test/processor';
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear, scaleOrdinal } from '@visx/scale';
 import { LegendItem, LegendLabel, LegendOrdinal } from '@visx/legend';
@@ -36,11 +36,7 @@ export interface Legend {
   colors: Array<string>;
 }
 
-export interface ChartData {
-  month: MonthIndex;
-  [label: string]: number;
-}
-
+// TODO use visx parentsize component
 const width = 800;
 const height = 800;
 const margin = {
@@ -49,50 +45,18 @@ const margin = {
   left: 0,
   right: 0,
 };
+
 const background = "#ffdede";
 const darkColor = "#333";
 
-const keys = [ "potato", "management", "sport", "fishing", "shopping", "community", "celebrity", "security" ];
-const colors = ["#ffc409", "#f14702", "#262d97", "white", "#036ecd", "#9ecadd", "#51666e", "teal"];
-
-const padChartData = (chartData: Array<ChartData>, keys: Array<string>): Array<ChartData> => {
-  chartData.forEach((data) => {
-    keys.forEach((key) => {
-      const dataPoint = data[key];
-      if (dataPoint === undefined) {
-        data[key] = 0;
-      }
-    })
-  });
-
-  return chartData;
-};
-
 export function Visualize({ data }: VisualizeProps) {
   const processor = new Processor(data);
-  const top3TopicsByMonth = processor.top3TopicsByMonth;
+  const chartProcessor = new ChartProcessor(processor.top3TopicsByMonth);
 
-  const rawChartData = Array.from(top3TopicsByMonth.entries())
-    .map(([monthIndex, topics]) => {
-      const cd: ChartData = {
-        month: monthIndex,
-      };
-
-      topics.forEach((topic) => {
-        cd[topic.label] = topic.likelihood
-      });
-
-      return cd;
-    });
-
-  const sortedRawChartData = rawChartData.sort((a, b) => a.month - b.month);
-
-  const legendDomainWithDuplicates = Array.from(top3TopicsByMonth.values())
-    .flatMap((topics) => topics);
-
-  const likelihoodDomain = legendDomainWithDuplicates.map((topic) => topic.likelihood);
-
-  const allChartData = padChartData(sortedRawChartData, keys);
+  const likelihoodDomain = chartProcessor.likelihoodDomain;
+  const allChartData = chartProcessor.chartData;
+  const keys = chartProcessor.uniqueKeys;
+  const colors = chartProcessor.keyColors;
 
   const legend: Legend = {
     domain: keys,
@@ -102,7 +66,7 @@ export function Visualize({ data }: VisualizeProps) {
   // accessors
   const getMonth = (chartData: ChartData) => MONTHS[chartData.month];
 
-// scales
+  // scales
   const monthScale = scaleBand<string>({
     domain: allChartData.map(getMonth),
     padding: 0.2,
